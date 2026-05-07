@@ -1,0 +1,39 @@
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Env files
+.env
+.env.*
+!.env.example
+
+# Node dependencies
+node_modules/
+app/frontend/node_modules/
+app/backend/node_modules/
+
+# Build outputs
+app/frontend/dist/
+app/frontend/.vite/
+
+# Test / coverage
+coverage/
+.nyc_output/
+
+# Runtime
+*.pid
+*.seed
+*.pid.lock
+
+# Misc
+*.tmp
+*.temp
