@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Quiz</title>
+<style>* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: linear-gradient(135deg, #f6d5f7 0%, #fbe9d7 50%, #c2e9fb 100%);
+  background-attachment: fixed;
+  color: #2d2d3a;
+  min-height: 100vh;
+  padding: 24px;
+  -webkit-font-smoothing: antialiased;
+}
+.app { width: 100%; max-width: 460px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; padding-bottom: 100px; }
+.glass { background: rgba(255,255,255,0.7); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.6); border-radius: 22px; box-shadow: 0 14px 40px rgba(50,50,93,0.12), 0 4px 12px rgba(0,0,0,0.05); }
+.card-base { background: #fff; border-radius: 22px; box-shadow: 0 14px 40px rgba(50,50,93,0.12), 0 4px 12px rgba(0,0,0,0.05); padding: 20px; }
+h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.6px; color: #2d2d3a; }
+h2 { font-size: 20px; font-weight: 700; letter-spacing: -0.4px; color: #2d2d3a; }
+h3 { font-size: 15px; font-weight: 700; color: #3a3a52; }
+p, span, label { color: #5a5a72; }
+.muted { color: #888; font-size: 13px; }
+.btn { border: none; cursor: pointer; padding: 14px 22px; border-radius: 999px; font-size: 15px; font-weight: 700; letter-spacing: 0.3px; color: #fff; box-shadow: 0 8px 20px rgba(106,130,251,0.25); transition: transform .15s, box-shadow .2s; background: linear-gradient(135deg, #6a82fb, #fc5c7d); width: 100%; }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(106,130,251,0.35); }
+.btn:active { transform: translateY(0); }
+.btn.ghost { background: rgba(255,255,255,0.7); color: #3a3a52; box-shadow: 0 4px 14px rgba(0,0,0,0.06); border: 1px solid rgba(255,255,255,0.9); }
+.btn.green { background: linear-gradient(135deg, #27ae60, #2ecc71); }
+.btn.red { background: linear-gradient(135deg, #e74c3c, #ff6b6b); }
+.input { width: 100%; padding: 14px 18px; border: 1px solid rgba(0,0,0,0.08); background: rgba(255,255,255,0.8); border-radius: 14px; font-size: 15px; outline: none; transition: border .2s, box-shadow .2s; font-family: inherit; }
+.input:focus { border-color: #6a82fb; box-shadow: 0 0 0 4px rgba(106,130,251,0.15); }
+.row { display: flex; gap: 12px; align-items: center; }
+.between { display: flex; justify-content: space-between; align-items: center; }
+.col { display: flex; flex-direction: column; gap: 12px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; background: rgba(106,130,251,0.12); color: #5664c7; font-size: 12px; font-weight: 600; }
+.progress-bar { width: 100%; height: 8px; background: rgba(255,255,255,0.6); border-radius: 999px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.08); }
+.progress-fill { height: 100%; background: linear-gradient(90deg, #6a82fb, #fc5c7d); border-radius: 999px; transition: width .4s ease; }
+.fade-in { animation: fadeUp .5s ease both; }
+@keyframes fadeUp { from { opacity:0; transform: translateY(10px);} to { opacity:1; transform: translateY(0);} }
+.bottom-nav { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); width: calc(100% - 32px); max-width: 460px; background: rgba(255,255,255,0.85); backdrop-filter: blur(20px); border-radius: 999px; border: 1px solid rgba(255,255,255,0.7); box-shadow: 0 14px 40px rgba(50,50,93,0.18); display: flex; justify-content: space-around; padding: 10px; z-index: 50; }
+.nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px; font-size: 11px; font-weight: 600; color: #888; cursor: pointer; border-radius: 999px; transition: all .2s; text-decoration:none; }
+.nav-item .ico { font-size: 20px; }
+.nav-item.active { color: #6a82fb; background: rgba(106,130,251,0.12); }
+
+
+.opt { padding:14px 16px;border:1.5px solid rgba(0,0,0,.08);background:#fff;border-radius:14px;text-align:left;font-weight:600;font-size:15px;cursor:pointer;transition:all .2s;font-family:inherit;color:#2d2d3a;}
+.opt:hover { border-color:#6a82fb;transform:translateX(4px); }
+.opt.correct { background:linear-gradient(135deg,#27ae60,#2ecc71);color:#fff;border-color:transparent; }
+.opt.wrong { background:linear-gradient(135deg,#e74c3c,#ff6b6b);color:#fff;border-color:transparent; }
+
+</style></head><body>
+
+<div class="app fade-in">
+  <header class="between"><button onclick="history.back()" style="background:none;border:none;font-size:22px;cursor:pointer">←</button>
+    <div style="text-align:center"><p class="muted" style="font-size:11px">QUIZ · TOEIC</p><h2 id="qProg">Question 3 / 10</h2></div>
+    <div style="background:rgba(255,255,255,.7);padding:6px 12px;border-radius:999px;font-weight:700;color:#fc5c7d" id="timer">⏱ 0:42</div>
+  </header>
+  <div class="progress-bar"><div class="progress-fill" id="qpf" style="width:30%"></div></div>
+  <div class="card-base">
+    <p class="muted" style="font-size:12px;font-weight:700">VOCABULARY</p>
+    <h2 style="margin-top:8px;line-height:1.3">She was praised for her ___ to detail in the report.</h2>
+    <div class="col" id="opts" style="margin-top:18px">
+      <button class="opt">A. attention</button>
+      <button class="opt">B. attendance</button>
+      <button class="opt">C. attentive</button>
+      <button class="opt">D. attendant</button>
+    </div>
+  </div>
+  <div id="feedback" style="display:none" class="card-base fade-in">
+    <h3 style="color:#27ae60">✓ Correct!</h3>
+    <p style="margin-top:8px;font-size:14px;line-height:1.5"><b>attention to detail</b> is a fixed collocation meaning carefulness with small things.</p>
+  </div>
+  <button class="btn" id="nextBtn" style="display:none" onclick="location.href='quiz-result.html'">Next question →</button>
+</div>
+<script>
+let secs=42;const t=document.getElementById('timer');setInterval(()=>{if(secs<=0)return;secs--;t.textContent='⏱ 0:'+String(secs).padStart(2,'0');},1000);
+document.querySelectorAll('.opt').forEach(o=>o.onclick=()=>{document.querySelectorAll('.opt').forEach(x=>x.disabled=true);if(o.textContent.startsWith('A'))o.classList.add('correct');else{o.classList.add('wrong');document.querySelectorAll('.opt')[0].classList.add('correct');}document.getElementById('feedback').style.display='block';document.getElementById('nextBtn').style.display='block';});
+</script>
+</body></html>

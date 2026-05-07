@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Home — AI English</title>
+<style>* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: linear-gradient(135deg, #f6d5f7 0%, #fbe9d7 50%, #c2e9fb 100%);
+  background-attachment: fixed;
+  color: #2d2d3a;
+  min-height: 100vh;
+  padding: 24px;
+  -webkit-font-smoothing: antialiased;
+}
+.app { width: 100%; max-width: 460px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; padding-bottom: 100px; }
+.glass { background: rgba(255,255,255,0.7); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.6); border-radius: 22px; box-shadow: 0 14px 40px rgba(50,50,93,0.12), 0 4px 12px rgba(0,0,0,0.05); }
+.card-base { background: #fff; border-radius: 22px; box-shadow: 0 14px 40px rgba(50,50,93,0.12), 0 4px 12px rgba(0,0,0,0.05); padding: 20px; }
+h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.6px; color: #2d2d3a; }
+h2 { font-size: 20px; font-weight: 700; letter-spacing: -0.4px; color: #2d2d3a; }
+h3 { font-size: 15px; font-weight: 700; color: #3a3a52; }
+p, span, label { color: #5a5a72; }
+.muted { color: #888; font-size: 13px; }
+.btn { border: none; cursor: pointer; padding: 14px 22px; border-radius: 999px; font-size: 15px; font-weight: 700; letter-spacing: 0.3px; color: #fff; box-shadow: 0 8px 20px rgba(106,130,251,0.25); transition: transform .15s, box-shadow .2s; background: linear-gradient(135deg, #6a82fb, #fc5c7d); width: 100%; }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(106,130,251,0.35); }
+.btn:active { transform: translateY(0); }
+.btn.ghost { background: rgba(255,255,255,0.7); color: #3a3a52; box-shadow: 0 4px 14px rgba(0,0,0,0.06); border: 1px solid rgba(255,255,255,0.9); }
+.btn.green { background: linear-gradient(135deg, #27ae60, #2ecc71); }
+.btn.red { background: linear-gradient(135deg, #e74c3c, #ff6b6b); }
+.input { width: 100%; padding: 14px 18px; border: 1px solid rgba(0,0,0,0.08); background: rgba(255,255,255,0.8); border-radius: 14px; font-size: 15px; outline: none; transition: border .2s, box-shadow .2s; font-family: inherit; }
+.input:focus { border-color: #6a82fb; box-shadow: 0 0 0 4px rgba(106,130,251,0.15); }
+.row { display: flex; gap: 12px; align-items: center; }
+.between { display: flex; justify-content: space-between; align-items: center; }
+.col { display: flex; flex-direction: column; gap: 12px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; background: rgba(106,130,251,0.12); color: #5664c7; font-size: 12px; font-weight: 600; }
+.progress-bar { width: 100%; height: 8px; background: rgba(255,255,255,0.6); border-radius: 999px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.08); }
+.progress-fill { height: 100%; background: linear-gradient(90deg, #6a82fb, #fc5c7d); border-radius: 999px; transition: width .4s ease; }
+.fade-in { animation: fadeUp .5s ease both; }
+@keyframes fadeUp { from { opacity:0; transform: translateY(10px);} to { opacity:1; transform: translateY(0);} }
+.bottom-nav { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); width: calc(100% - 32px); max-width: 460px; background: rgba(255,255,255,0.85); backdrop-filter: blur(20px); border-radius: 999px; border: 1px solid rgba(255,255,255,0.7); box-shadow: 0 14px 40px rgba(50,50,93,0.18); display: flex; justify-content: space-around; padding: 10px; z-index: 50; }
+.nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px; font-size: 11px; font-weight: 600; color: #888; cursor: pointer; border-radius: 999px; transition: all .2s; text-decoration:none; }
+.nav-item .ico { font-size: 20px; }
+.nav-item.active { color: #6a82fb; background: rgba(106,130,251,0.12); }
+
+
+</style></head><body>
+
+<div class="app fade-in">
+  <header class="between" style="padding-top:8px">
+    <div><p class="muted">Good morning ☀️</p><h1>Hi, Learner!</h1></div>
+    <div style="width:48px;height:48px;border-radius:999px;background:linear-gradient(135deg,#6a82fb,#fc5c7d);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800">L</div>
+  </header>
+  <div class="glass row" style="padding:18px;justify-content:space-around;text-align:center">
+    <div><div style="font-size:22px;font-weight:800;color:#fc5c7d">🔥 7</div><p class="muted" style="font-size:12px">Day streak</p></div>
+    <div style="width:1px;background:rgba(0,0,0,.08)"></div>
+    <div><div style="font-size:22px;font-weight:800;color:#6a82fb">128</div><p class="muted" style="font-size:12px">Words</p></div>
+    <div style="width:1px;background:rgba(0,0,0,.08)"></div>
+    <div><div style="font-size:22px;font-weight:800;color:#27ae60">82%</div><p class="muted" style="font-size:12px">Accuracy</p></div>
+  </div>
+  <div class="card-base" style="background:linear-gradient(135deg,#6a82fb,#fc5c7d);color:#fff">
+    <p style="opacity:.85;font-size:13px">Continue learning</p>
+    <h2 style="color:#fff;margin-top:4px">TOEIC Vocabulary · Set 3</h2>
+    <div class="progress-bar" style="margin-top:14px;background:rgba(255,255,255,.25)"><div class="progress-fill" style="width:60%;background:#fff"></div></div>
+    <button class="btn ghost" style="margin-top:14px;color:#6a82fb" onclick="location.href='flashcards-study.html'">Resume →</button>
+  </div>
+  <div>
+    <h3 style="margin-bottom:10px">Recent flashcards</h3>
+    <div class="row" style="gap:10px;overflow-x:auto;padding-bottom:6px">
+      <div class="card-base" style="min-width:140px"><p class="muted" style="font-size:11px">VOCAB</p><h3>Business</h3><p class="muted">12 cards</p></div>
+      <div class="card-base" style="min-width:140px"><p class="muted" style="font-size:11px">IELTS</p><h3>Writing</h3><p class="muted">8 cards</p></div>
+      <div class="card-base" style="min-width:140px"><p class="muted" style="font-size:11px">GRAMMAR</p><h3>Tenses</h3><p class="muted">15 cards</p></div>
+    </div>
+  </div>
+  <div>
+    <h3 style="margin-bottom:10px">Recommended for you</h3>
+    <div class="col">
+      <div class="card-base between"><div><p class="muted" style="font-size:12px">QUIZ · 10 questions</p><h3>Phrasal verbs</h3></div><button class="btn" style="width:auto;padding:10px 16px" onclick="location.href='quiz.html'">Start</button></div>
+      <div class="card-base between"><div><p class="muted" style="font-size:12px">CHAT</p><h3>Continue: IELTS Speaking</h3></div><button class="btn ghost" style="width:auto;padding:10px 16px" onclick="location.href='chat.html'">Open</button></div>
+      <div class="card-base"><p class="muted" style="font-size:12px">⚠️ WEAK TOPIC</p><h3>Conditional sentences</h3><p class="muted" style="margin-top:4px">Tap to practice 5 quick questions</p></div>
+    </div>
+  </div>
+</div>
+<nav class="bottom-nav"><a class="nav-item active" href="home.html"><span class="ico">🏠</span>Home</a><a class="nav-item" href="chat.html"><span class="ico">💬</span>Chat</a><a class="nav-item" href="flashcards.html"><span class="ico">🃏</span>Cards</a><a class="nav-item" href="quiz.html"><span class="ico">🎯</span>Quiz</a><a class="nav-item" href="profile.html"><span class="ico">👤</span>Profile</a></nav>
+<script></script>
+</body></html>

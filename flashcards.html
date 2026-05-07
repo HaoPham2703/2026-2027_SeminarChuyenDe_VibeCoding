@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Flashcards — Learn Vocabulary</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, #f6d5f7 0%, #fbe9d7 50%, #c2e9fb 100%);
+    color: #2d2d3a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    min-height: 100vh;
+    overflow: hidden;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+  }
+
+  header {
+    width: 100%;
+    text-align: center;
+  }
+  header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 14px;
+    color: #3a3a52;
+  }
+
+  /* Progress */
+  .progress-wrap {
+    width: 100%;
+  }
+  .progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #5a5a72;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  .progress-bar {
+    width: 100%;
+    height: 10px;
+    background: rgba(255,255,255,0.6);
+    border-radius: 999px;
+    overflow: hidden;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #6a82fb, #fc5c7d);
+    border-radius: 999px;
+    transition: width 0.4s ease;
+  }
+
+  /* Card */
+  .card-area {
+    position: relative;
+    width: 320px;
+    height: 420px;
+    perspective: 1200px;
+  }
+
+  .card {
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(.2,.8,.2,1), box-shadow 0.3s;
+    cursor: grab;
+    will-change: transform;
+    box-shadow: 0 20px 50px rgba(50, 50, 93, 0.18), 0 8px 18px rgba(0,0,0,0.08);
+  }
+  .card:hover { transform: scale(1.02); }
+  .card.flipped { transform: rotateY(180deg); }
+  .card.dragging { transition: none; cursor: grabbing; }
+  .card.swipe-left  { transition: transform 0.5s ease, opacity 0.5s ease; transform: translateX(-700px) rotate(-30deg); opacity: 0; }
+  .card.swipe-right { transition: transform 0.5s ease, opacity 0.5s ease; transform: translateX(700px) rotate(30deg); opacity: 0; }
+
+  .face {
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+    background: #ffffff;
+    text-align: center;
+    overflow: hidden;
+  }
+  .face.front {
+    background: linear-gradient(160deg, #ffffff 0%, #f7f8ff 100%);
+  }
+  .face.back {
+    transform: rotateY(180deg);
+    background: linear-gradient(160deg, #fffaf3 0%, #ffe7e1 100%);
+  }
+
+  .word {
+    font-size: 44px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    color: #2d2d3a;
+    margin-bottom: 12px;
+  }
+  .pos {
+    font-size: 14px;
+    color: #888;
+    font-style: italic;
+    margin-bottom: 18px;
+  }
+  .hint {
+    position: absolute;
+    bottom: 20px;
+    font-size: 12px;
+    color: #aaa;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .meaning {
+    font-size: 32px;
+    font-weight: 700;
+    color: #c0392b;
+  }
+
+  /* Overlays */
+  .overlay {
+    position: absolute;
+    top: 24px;
+    padding: 8px 18px;
+    border: 4px solid;
+    border-radius: 12px;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s;
+  }
+  .overlay.correct {
+    right: 24px;
+    color: #27ae60;
+    border-color: #27ae60;
+    transform: rotate(15deg);
+  }
+  .overlay.wrong {
+    left: 24px;
+    color: #e74c3c;
+    border-color: #e74c3c;
+    transform: rotate(-15deg);
+  }
+
+  /* Dots */
+  .dots {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 320px;
+  }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(0,0,0,0.15);
+    transition: all 0.3s;
+  }
+  .dot.active {
+    background: #6a82fb;
+    width: 22px;
+  }
+  .dot.done {
+    background: #27ae60;
+  }
+
+  /* Buttons */
+  .actions {
+    display: flex;
+    gap: 18px;
+  }
+  .btn {
+    border: none;
+    cursor: pointer;
+    padding: 14px 28px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    transition: transform 0.15s, box-shadow 0.2s;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(0,0,0,0.18); }
+  .btn:active { transform: translateY(0); }
+  .btn.know { background: linear-gradient(135deg, #27ae60, #2ecc71); }
+  .btn.dont { background: linear-gradient(135deg, #e74c3c, #ff6b6b); }
+
+  /* Finish screen */
+  .finish {
+    text-align: center;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(10px);
+    padding: 40px;
+    border-radius: 24px;
+    box-shadow: 0 20px 50px rgba(50,50,93,0.18);
+  }
+  .finish h2 { font-size: 26px; margin-bottom: 10px; }
+  .finish p { color: #555; margin-bottom: 20px; }
+  .finish .btn { background: linear-gradient(135deg, #6a82fb, #fc5c7d); }
+
+  @media (max-width: 380px) {
+    .card-area { width: 280px; height: 380px; }
+    .word { font-size: 36px; }
+  }
+</style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>✨ Vocabulary Flashcards</h1>
+      <div class="progress-wrap">
+        <div class="progress-info">
+          <span id="progressText">0 / 10 words learned</span>
+          <span id="scoreText">✓ 0  ✗ 0</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+    </header>
+
+    <div class="card-area" id="cardArea"></div>
+
+    <div class="dots" id="dots"></div>
+
+    <div class="actions">
+      <button class="btn dont" id="btnDont">✗ Don't Know</button>
+      <button class="btn know" id="btnKnow">✓ Know</button>
+    </div>
+  </div>
+
+<script>
+  const words = [
+    { en: "Serendipity", pos: "noun",      vi: "Sự tình cờ may mắn" },
+    { en: "Ephemeral",   pos: "adjective", vi: "Phù du, ngắn ngủi" },
+    { en: "Resilient",   pos: "adjective", vi: "Kiên cường" },
+    { en: "Eloquent",    pos: "adjective", vi: "Hùng hồn, lưu loát" },
+    { en: "Wanderlust",  pos: "noun",      vi: "Khao khát du lịch" },
+    { en: "Mellifluous", pos: "adjective", vi: "Du dương, êm tai" },
+    { en: "Quintessential", pos: "adjective", vi: "Tinh túy, điển hình" },
+    { en: "Petrichor",   pos: "noun",      vi: "Mùi đất sau mưa" },
+    { en: "Ineffable",   pos: "adjective", vi: "Không thể diễn tả" },
+    { en: "Solitude",    pos: "noun",      vi: "Sự cô đơn, tĩnh lặng" }
+  ];
+
+  const cardArea = document.getElementById('cardArea');
+  const dotsEl   = document.getElementById('dots');
+  const progressFill = document.getElementById('progressFill');
+  const progressText = document.getElementById('progressText');
+  const scoreText    = document.getElementById('scoreText');
+
+  let index = 0;
+  let correct = 0, wrong = 0;
+  let currentCard = null;
+  let drag = null;
+
+  function buildDots() {
+    dotsEl.innerHTML = '';
+    words.forEach((_, i) => {
+      const d = document.createElement('div');
+      d.className = 'dot' + (i === index ? ' active' : (i < index ? ' done' : ''));
+      dotsEl.appendChild(d);
+    });
+  }
+
+  function updateProgress() {
+    const learned = correct + wrong;
+    progressFill.style.width = (learned / words.length * 100) + '%';
+    progressText.textContent = `${learned} / ${words.length} words learned`;
+    scoreText.textContent = `✓ ${correct}  ✗ ${wrong}`;
+  }
+
+  function renderFinish() {
+    cardArea.innerHTML = `
+      <div class="finish">
+        <h2>🎉 All done!</h2>
+        <p>You got <b style="color:#27ae60">${correct}</b> correct and <b style="color:#e74c3c">${wrong}</b> wrong.</p>
+        <button class="btn" onclick="restart()">Restart</button>
+      </div>`;
+    dotsEl.innerHTML = '';
+  }
+
+  window.restart = function() {
+    index = 0; correct = 0; wrong = 0;
+    updateProgress(); buildDots(); renderCard();
+  };
+
+  function renderCard() {
+    if (index >= words.length) { renderFinish(); return; }
+    const w = words[index];
+    cardArea.innerHTML = `
+      <div class="card" id="card">
+        <div class="face front">
+          <div class="overlay wrong">WRONG</div>
+          <div class="overlay correct">CORRECT</div>
+          <div class="word">${w.en}</div>
+          <div class="pos">${w.pos}</div>
+          <div class="hint">Tap to flip · Drag to answer</div>
+        </div>
+        <div class="face back">
+          <div class="word" style="font-size:22px;color:#888;margin-bottom:6px">${w.en}</div>
+          <div class="meaning">${w.vi}</div>
+          <div class="hint">Tap to flip back</div>
+        </div>
+      </div>`;
+    currentCard = document.getElementById('card');
+    attachInteractions(currentCard);
+    buildDots();
+  }
+
+  function attachInteractions(card) {
+    let startX = 0, startY = 0, dx = 0, dy = 0, dragging = false, moved = false;
+
+    const overlayCorrect = card.querySelector('.overlay.correct');
+    const overlayWrong   = card.querySelector('.overlay.wrong');
+
+    const onDown = (e) => {
+      const p = e.touches ? e.touches[0] : e;
+      startX = p.clientX; startY = p.clientY;
+      dragging = true; moved = false;
+      card.classList.add('dragging');
+    };
+    const onMove = (e) => {
+      if (!dragging) return;
+      const p = e.touches ? e.touches[0] : e;
+      dx = p.clientX - startX;
+      dy = p.clientY - startY;
+      if (Math.abs(dx) > 5) moved = true;
+      const rot = dx / 20;
+      const flipped = card.classList.contains('flipped') ? 180 : 0;
+      card.style.transform = `translate(${dx}px, ${dy}px) rotate(${rot}deg) rotateY(${flipped}deg)`;
+      const op = Math.min(Math.abs(dx) / 120, 1);
+      overlayCorrect.style.opacity = dx > 0 ? op : 0;
+      overlayWrong.style.opacity   = dx < 0 ? op : 0;
+    };
+    const onUp = () => {
+      if (!dragging) return;
+      dragging = false;
+      card.classList.remove('dragging');
+      if (Math.abs(dx) > 120) {
+        swipe(dx > 0 ? 'right' : 'left');
+      } else {
+        card.style.transform = '';
+        overlayCorrect.style.opacity = 0;
+        overlayWrong.style.opacity = 0;
+        if (!moved) card.classList.toggle('flipped');
+      }
+      dx = dy = 0;
+    };
+
+    card.addEventListener('mousedown', onDown);
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+    card.addEventListener('touchstart', onDown, {passive:true});
+    window.addEventListener('touchmove', onMove, {passive:true});
+    window.addEventListener('touchend', onUp);
+  }
+
+  function swipe(dir) {
+    if (!currentCard) return;
+    currentCard.classList.add(dir === 'right' ? 'swipe-right' : 'swipe-left');
+    if (dir === 'right') correct++; else wrong++;
+    setTimeout(() => {
+      index++;
+      updateProgress();
+      renderCard();
+    }, 400);
+  }
+
+  document.getElementById('btnKnow').addEventListener('click', () => swipe('right'));
+  document.getElementById('btnDont').addEventListener('click', () => swipe('left'));
+
+  updateProgress();
+  renderCard();
+</script>
+</body>
+</html>
